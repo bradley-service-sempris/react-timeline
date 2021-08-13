@@ -1,0 +1,9 @@
+{
+    "extends": "@sempris/eslint-config",
+    "rules": {
+        "react/display-name": 0,
+        "array-callback-return": 0,
+        "no-case-declartions": 0,
+        "space-before-function-paren":"off"
+    }
+}

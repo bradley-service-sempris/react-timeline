@@ -1,0 +1,13 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+    "[javascript]": {
+        "editor.formatOnSave": true
+    },
+
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "jest.debugMode": true,
+    "jest.pathToConfig": "test/jest.config.js"
+}
