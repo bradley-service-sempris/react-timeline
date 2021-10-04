@@ -1,9 +1,15 @@
 {
-    "extends": "@sempris/eslint-config",
+    "plugins": ["jest"],
+    "extends": ["@sempris/eslint-config", "plugin:jest/recommended"],
     "rules": {
         "react/display-name": 0,
         "array-callback-return": 0,
         "no-case-declartions": 0,
-        "space-before-function-paren":"off"
+        "space-before-function-paren":"off",
+        "jest/no-conditional-expect": "off",
+        "jest/no-try-expect": "off"
+    },
+    "globals": {
+        "localStorage": true
     }
 }

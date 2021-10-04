@@ -1,7 +1,7 @@
 {
-  "name": "react-boiler-plate",
+  "name": "react-timeline-test",
   "version": "0.0.1",
-  "description": "boiler plate for react apps",
+  "description": "an example of potential timeline usage for sims-ui",
   "main": "src/index.js",
   "scripts": {
     "start": "react-scripts start",
@@ -20,7 +20,8 @@
     "react-dom": "17.0.2",
     "react-redux": "7.2.4",
     "react-router-dom": "5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "3.4.4",
+    "react-vertical-timeline-component": "3.3.3",
     "redux-observable": "2.0.0",
     "rxjs": "7.3.0"
   },
@@ -31,7 +32,6 @@
     "@babel/preset-react": "7.14.5",
     "@sempris/eslint-config": "0.0.9",
     "@wojtekmaj/enzyme-adapter-react-17": "0.6.3",
-    "babel-jest": "27.0.6",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.6",
     "jest": "27.0.6",
