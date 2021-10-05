@@ -26,6 +26,7 @@ const styles = (theme) => ({
 	root: {
 		width: '25vw',
 		height: '100vh',
+		// use theme colors where applicable
 		border: '2px solid lightgrey'
 	}
 });

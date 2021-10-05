@@ -17,6 +17,7 @@ const styles = (theme) => ({
 const NotificationPage = (props) => {
 	const {
 		classes,
+		getNotificationById,
 		hasLoadedList,
 		hasLoadedEntries,
 		isLoadingEntries,
@@ -35,8 +36,10 @@ const NotificationPage = (props) => {
 			/>
 			<Timeline
 				data={selectedNotification}
+				getNotificationById={getNotificationById}
 				hasLoadedEntries={hasLoadedEntries}
 				isLoadingEntries={isLoadingEntries}
+				parentData={listOfNotifications}
 			/>
 		</div>
 	);
@@ -44,6 +47,7 @@ const NotificationPage = (props) => {
 
 NotificationPage.propTypes = {
 	classes: PropTypes.object,
+	getNotificationById: PropTypes.func,
 	hasLoadedEntries: PropTypes.bool,
 	hasLoadedList: PropTypes.bool,
 	isLoadingEntries: PropTypes.bool,
@@ -79,6 +83,9 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		getNotifications: () => {
 			dispatch(timelineActions.getNotifications());
+		},
+		getNotificationById: (id) => {
+			dispatch(timelineActions.getNotificationsById(id));
 		}
 	};
 };

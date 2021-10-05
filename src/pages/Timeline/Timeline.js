@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import {
 	VerticalTimeline,
 	VerticalTimelineElement
@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import TimelineModal from './TimelineModal';
 
 import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
 import Chip from '@material-ui/core/Chip';
 import CloseIcon from '@material-ui/icons/Close';
 import Container from '@material-ui/core/Container';
@@ -17,20 +18,28 @@ import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import HowToRegIcon from '@material-ui/icons/HowToReg';
 import IconButton from '@material-ui/core/IconButton';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
+import StarIcon from '@material-ui/icons/Star';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+
+// TODO: use theme colors where applicable
 
 const styles = (theme) => ({
 	buttonContainer: {
 		display: 'flex',
-		justifyContent: 'center'
+		alignItems: 'center',
+		flexDirection: 'column',
+		margin: '10px'
 	},
 	button: {
 		display: 'flex',
 		justifyContent: 'center',
 		border: '1px solid black',
 		background: 'white'
+	},
+	initialEntry: {
+		display: 'flex',
+		justifyContent: 'center'
 	},
 	notificationBox: {
 		margin: '5px 0px 5px 0px',
@@ -66,20 +75,52 @@ const styles = (theme) => ({
 });
 
 const Timeline = (props) => {
-	const { classes, data, hasLoadedEntries, isLoadingEntries } = props;
-	const { button, buttonContainer, notificationBox, root, title } = classes;
+	const {
+		classes,
+		data,
+		getNotificationById,
+		hasLoadedEntries,
+		isLoadingEntries,
+		parentData
+	} = props;
+	const {
+		button,
+		buttonContainer,
+		initialEntry,
+		notificationBox,
+		root,
+		title
+	} = classes;
 
 	const [open, setOpen] = useState(false);
 
 	const handleClose = () => {
 		setOpen(false);
 	};
+
+	const renderTimelineTitle = useCallback(
+		(id) => {
+			let filteredTitle = parentData
+				.filter((notification) => notification.id === id)
+				.map((notification) => notification.title);
+			if (filteredTitle.length) {
+				return filteredTitle[0];
+			}
+			return [];
+		},
+		[parentData]
+	);
+
+	useEffect(() => {
+		if (hasLoadedEntries) {
+			renderTimelineTitle(data[0].parentId);
+		}
+	}, [data, hasLoadedEntries, parentData, renderTimelineTitle]);
 	// TODO: auth user to make sure that they are capable of manipulating
 	// the stream of notifications
 	const deleteNotification = (card) => {
 		const idx = data.indexOf(card);
 		data.splice(idx, 1);
-		console.log('data', data);
 		return data;
 	};
 
@@ -113,7 +154,7 @@ const Timeline = (props) => {
 			case 'Resolved':
 				return <CheckCircleOutlineIcon />;
 			default:
-				break;
+				return <StarIcon />;
 		}
 	};
 
@@ -177,7 +218,18 @@ const Timeline = (props) => {
 							isOpen={open}
 							onClose={handleClose}
 							notifications={data}
+							getNotificationById={getNotificationById}
 						/>
+						<VerticalTimelineElement
+							iconStyle={typeOptionColors()}
+							icon={typeOptionIcons()}
+							className={notificationBox}
+							layout={'1-column-left'}
+						>
+							<Typography variant="h6" className={initialEntry}>
+								{renderTimelineTitle(data[0].parentId) || null}
+							</Typography>
+						</VerticalTimelineElement>
 					</VerticalTimeline>
 				</Fragment>
 			)}
@@ -188,8 +240,10 @@ const Timeline = (props) => {
 Timeline.propTypes = {
 	classes: PropTypes.object,
 	data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+	getNotificationById: PropTypes.func,
 	hasLoadedEntries: PropTypes.bool,
-	isLoadingEntries: PropTypes.bool
+	isLoadingEntries: PropTypes.bool,
+	parentData: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
 };
 
 export default withStyles(styles)(Timeline);

@@ -11,6 +11,11 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import ErrorOutline from '@material-ui/icons/ErrorOutline';
+import HowToReg from '@material-ui/icons/HowToReg';
+import NotInterested from '@material-ui/icons/NotInterested';
+import TrendingUp from '@material-ui/icons/TrendingUp';
+import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 
 const styles = (theme) => ({
 	form: {
@@ -24,36 +29,47 @@ const styles = (theme) => ({
 });
 
 const TimelineModal = (props) => {
-	const { classes, isOpen, notifications, onClose } = props;
+	const { classes, getNotificationById, isOpen, notifications, onClose } =
+		props;
 	const { form } = classes;
 
 	const [validToApply, setValidToApply] = useState(false);
 	const [inputValues, setInputValues] = useState({
-		title: '',
+		author: {
+			username: 'Bradley S.',
+			avatar: '' || null
+		},
+		description: '',
+		parentId: notifications[0].parentId,
 		type: '',
-		time: '',
-		description: ''
+		time: ''
 	});
 
 	const typeOptions = [
-		'Alert',
-		'Assigned',
-		'Blocked',
-		'Escalation',
-		'Resolved'
+		{ type: 'Alert', icon: <ErrorOutline /> },
+		{ type: 'Assigned', icon: <HowToReg /> },
+		{ type: 'Blocked', icon: <NotInterested /> },
+		{ type: 'Escalation', icon: <TrendingUp /> },
+		{ type: 'Resolved', icon: <CheckCircleOutline /> }
 	];
 
+	// TODO: new card added to stream needs a users ID
+	// and the ID of the parent notification to know where
+	// to submit the card
+
 	const addNewTimelineCard = () => {
-		let { title, type, time, description } = inputValues;
+		let { parentId, type, time, description, author } = inputValues;
 		time = new Date(Date.now()).toLocaleString().replace(/,/g, ' -');
 
 		const newCard = {
-			title,
+			parentId,
 			type,
 			time,
-			description
+			description,
+			author
 		};
-		notifications.push(newCard);
+		notifications.unshift(newCard);
+		getNotificationById(newCard.parentId);
 		onClose();
 	};
 
@@ -81,14 +97,6 @@ const TimelineModal = (props) => {
 						Fill out all fields in order to add a new card to the timeline:
 					</DialogContentText>
 					<Container className={form}>
-						{/* <TextField
-							label="Title*"
-							defaultValue={notifications[0].title}
-							InputLabelProps={{
-								shrink: true
-							}}
-							onChange={(e) => handleInputChange('title', e.target.value)}
-						/> */}
 						<TextField
 							select
 							label="Type*"
@@ -99,10 +107,10 @@ const TimelineModal = (props) => {
 								shrink: true
 							}}
 						>
-							{typeOptions.map((type) => {
+							{typeOptions.map((option) => {
 								return (
-									<MenuItem key={type} value={type}>
-										{type}
+									<MenuItem key={option.type} value={option.type}>
+										{option.type}&nbsp;&nbsp;{option.icon}
 									</MenuItem>
 								);
 							})}
@@ -135,9 +143,9 @@ const TimelineModal = (props) => {
 
 TimelineModal.propTypes = {
 	classes: PropTypes.object,
+	getNotificationById: PropTypes.func,
 	isOpen: PropTypes.bool,
 	notifications: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-	// onAdd: PropTypes.func,
 	onClose: PropTypes.func
 };
 
